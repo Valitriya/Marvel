@@ -20,10 +20,11 @@ class RandomChar extends Component {
     this.updateChar();
   }
 
+
   onCharLoaded = (char) => {
     this.setState({
       char,
-      loading: false,
+      loading: false
     });
   };
 
@@ -43,6 +44,7 @@ class RandomChar extends Component {
   //Метод по обращению к серверу для записи в state
   updateChar = () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
+    this.onCharLoading();
     this.marvelService
       .getCharacter(id)
       .then(this.onCharLoaded)
