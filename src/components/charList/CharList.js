@@ -10,22 +10,45 @@ class CharList extends Component {
     state = {
         charList: [],
         loading: true,
-        error: false
+        error: false,
+        newItemLoading: false,
+        offset: 210,
+        charEnded: false
     }
 
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.marvelService.getAllCharacters()
+       this.onRequest();
+    }
+    // Метод, отвечающий за прогрузку дополнительных 9 персонажей
+    onRequest = (offset) => {
+        this.onCharListLoading();
+        this.marvelService.getAllCharacters(offset)
         .then(this.onCharListLoaded)
         .catch(this.onError)
     }
-
-    onCharListLoaded = (charList) => {
+    // Метод, отвечающий за запуск запроса
+    onCharListLoading = () => {
         this.setState({
-            charList,
-            loading: false
+            newItemLoading: true
         })
+    }
+
+    // Метод, отвечающий за успешную загрузку
+    onCharListLoaded = (newCharList) => {
+    // Удаление кнопки из видимости, когда все персонажи прогружены 
+        let ended = false;
+        if(newCharList .length < 9){
+            ended = true;
+        }
+        this.setState(({offset, charList}) => ({
+            charList: [...charList, ...newCharList],
+            loading: false,
+            newItemLoading: false,
+            offset: offset + 9,
+            charEnded: ended
+        }))
     }
 
     onError = () => {
@@ -35,7 +58,7 @@ class CharList extends Component {
         })
     }
 
-    // Метод для оптимизации вне монструкции метода render
+    // Метод для оптимизации вне конструкции метода render
     renderItems(arr) {
         const items = arr.map((item) => {
             let imgStyle = {'objectFit' : 'cover'};
@@ -59,28 +82,31 @@ class CharList extends Component {
             </ul>
         )
     }
+
     render() {
 
-        const {charList, loading, error} = this.state;
+        const {charList, loading, error, newItemLoading, offset, charEnded} = this.state;
 
         const items = this.renderItems(charList);
 
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading ? <Spinner/> : null;
         const content = !(loading || error) ? items : null;
+
         return (
-        <div className="char__list">
-            {errorMessage}
-            {spinner}
-            {content}
-            <button className="button button__main button__long">
-                <div className="inner">load more</div>
-            </button>
-        </div>)
-        
-    }
-        
-    
+            <div className="char__list">
+                {errorMessage}
+                {spinner}
+                {content}
+                <button 
+                className="button button__main button__long"
+                disabled={newItemLoading}
+                style={{'display': charEnded ? 'none' : 'block'}}
+                onClick={() => this.onRequest(offset)}>
+                    <div className="inner">load more</div>
+                </button>
+            </div>)    
+    }   
 }
 
 export default CharList;

@@ -1,6 +1,7 @@
 import { Component } from "react/cjs/react.production.min";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-//предохранитель
+
+//Предохранитель
 class ErrorBoundary extends Component {
   state = {
     error: false,

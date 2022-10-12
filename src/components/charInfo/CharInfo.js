@@ -19,7 +19,7 @@ class CharInfo extends Component {
   componentDidMount() {
     this.updateChar();
   }
-  // обязательное сравнение с предыдущим пропсом/состоянием
+  // Обязательное сравнение с предыдущим пропсом/состоянием
   componentDidUpdate(prevProps, prevState) {
     if (this.props.charId !== prevProps.charId) {
       this.updateChar();
