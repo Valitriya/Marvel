@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 
@@ -10,31 +10,23 @@ import "./charList.scss";
 const CharList = (props) => {
 
   const [charList, setCharList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [newItemLoading, setNewItem] = useState(false);
   const [offset, setOffset] = useState(210);
   const [charEnded, setCharEnded] = useState(false);
 
-  const marvelService = new MarvelService();
+  const {loading, error, getAllCharacters} = useMarvelService();
 
   useEffect(() => {
-    onRequest();
+    onRequest(offset, true);
   }, []);
 
   // Метод, отвечающий за прогрузку дополнительных 9 персонажей
-  const onRequest = (offset) => {
-    onCharListLoading();
-    marvelService
-      .getAllCharacters(offset)
+  const onRequest = (offset, initial) => {
+    initial ? setNewItem(false) : setNewItem(true);
+      getAllCharacters(offset)
       .then(onCharListLoaded)
-      .catch(onError);
   };
-  // Метод, отвечающий за запуск запроса
-  const onCharListLoading = () => {
-    setNewItem(true);
-  };
-
+  
   // Метод, отвечающий за успешную загрузку
   const onCharListLoaded = (newCharList) => {
     // Удаление кнопки из видимости, когда все персонажи прогружены
@@ -43,16 +35,11 @@ const CharList = (props) => {
       ended = true;
     }
     setCharList(() => [...charList, ...newCharList]);
-    setLoading((loading) => false);
     setNewItem((newItemLoading) => false);
     setOffset((offset) => offset + 9);
     setCharEnded((charEnded) => ended);
   };
 
-  const onError = () => {
-    setError(true);
-    setLoading((loading) => false);
-  };
 
   const itemRef = useRef([]);
 
@@ -104,14 +91,14 @@ const CharList = (props) => {
   const items = renderItems(charList);
 
   const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const content = !(loading || error) ? items : null;
+  const spinner = loading && !newItemLoading ? <Spinner /> : null;
+
 
   return (
     <div className="char__list">
       {errorMessage}
       {spinner}
-      {content}
+      {items}
       <button
         className="button button__main button__long"
         disabled={newItemLoading}
