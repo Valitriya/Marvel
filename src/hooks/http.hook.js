@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
 //кастомный хук для избавления дублирования кода
-export const useHttp = () => {
+ export const useHttp = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   //запрос для изменения состояний
@@ -38,3 +38,4 @@ export const useHttp = () => {
 
   return { loading, request, error, clearError };
 };
+
