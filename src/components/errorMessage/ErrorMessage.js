@@ -16,7 +16,7 @@ const ErrorMessage = () => {
       />
       <h1 
         style={{    
-          marginLeft: "150px",
+          textAlign: "center",
           fontWeight: "bold",
           fontSize: "24px",
           color: "#9f0013",

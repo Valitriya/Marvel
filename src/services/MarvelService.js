@@ -1,6 +1,5 @@
 import {useHttp} from '../hooks/http.hook';
 
-//Класс на чистом JS, сетевая часть
 const useMarvelService = () => {
   const {loading, request, error, clearError} = useHttp();
 
@@ -8,33 +7,35 @@ const useMarvelService = () => {
   const _apiKey = "apikey=c77128a809855b0a1f17233c400eb41c";
   const _baseOffset = 300;
 
-//Получение всех персонажей
+
   const getAllCharacters = async (offset = _baseOffset) => {
     const res = await request(
       `${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`
     );
     return res.data.results.map(_transformCharacter);
   };
-//Получение одного персонажа
+
+  const getCharacterByName = async (name) => {
+    const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
+    return res.data.results.map(_transformCharacter);
+};
+    
   const getCharacter = async (id) => {
     const res = await request(
-      `${_apiBase}characters/${id}?${_apiKey}`
-    );
+      `${_apiBase}characters/${id}?${_apiKey}`);
     return _transformCharacter(res.data.results[0]);
   };
 
-// Получение всех комиксов 
-const getAllComics = async (offset = 0) => {
-  const res = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`);
-  return res.data.results.map(_transformComics);
-}
+  const getAllComics = async (offset = 0) => {
+    const res = await request(`${_apiBase}comics?orderBy=issueNumber&limit=8&offset=${offset}&${_apiKey}`);
+    return res.data.results.map(_transformComics);
+  }
 
-const getComic = async (id) => {
-  const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
-  return _transformComics(res.data.results[0])
-}
+  const getComic = async (id) => {
+    const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+    return _transformComics(res.data.results[0])
+  }
 
-//Получение и трансформирование данных
   const _transformCharacter = (char) => {
     return {
       id: char.id,
@@ -46,7 +47,7 @@ const getComic = async (id) => {
       comics: char.comics.items
     };
   };
-  //Получение и трансформирование данных
+ 
   const _transformComics = (comics) => {
     return { 
       id: comics.id,
@@ -59,7 +60,7 @@ const getComic = async (id) => {
     }
   }
 
-  return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComic}
+  return {loading, error, clearError, getAllCharacters, getCharacterByName, getCharacter, getAllComics, getComic}
 }
 
 export default useMarvelService;

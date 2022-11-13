@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import {Link} from "react-router-dom";
 
 import useMarvelService from "../../services/MarvelService";
-import SingleComicPage from "../pages/SingleComicPage";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
@@ -84,7 +83,7 @@ const View = ({ char }) => {
           if (i > 9) return;
           return (
             <li key={i} className="char__comics-item">
-              <Link to="/">{item.name}</Link>
+              <Link>{item.name}</Link>
             </li>
           );
         })}
