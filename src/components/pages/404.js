@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 
 import img from "./tanos.jpeg";
@@ -5,6 +6,13 @@ import img from "./tanos.jpeg";
 const Page404 = () => {
   return (
     <div>
+        <Helmet>
+          <meta
+            name="description"
+            content="404 not found"
+      />
+          <title>404 not found</title>
+        </Helmet>
       <img
         src={img}
         style={{
