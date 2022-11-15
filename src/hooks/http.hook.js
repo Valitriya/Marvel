@@ -1,10 +1,8 @@
 import { useState, useCallback } from "react";
 
-//кастомный хук для избавления дублирования кода
- export const useHttp = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  //запрос для изменения состояний
+ export const useHttp = () => {;
+  const [process, setProcess] = useState('waiting');
+  
   const request = useCallback(
     async (
       url,
@@ -12,7 +10,7 @@ import { useState, useCallback } from "react";
       body = null,
       headers = { "Content-Type": "application/json" }
     ) => {
-      setLoading(true);
+      setProcess('loading');
 
       try {
         const response = await fetch(url, { method, body, headers });
@@ -23,19 +21,19 @@ import { useState, useCallback } from "react";
 
         const data = await response.json();
 
-        setLoading(false);
         return data;
       } catch (e) {
-        setLoading(false);
-        setError(e.message);
+        setProcess('error');
         throw e;
       }
     },
     []
   );
 
-  const clearError = useCallback(() => setError(null), []);
+  const clearError = useCallback(() => {
+    setProcess('loading');
+  }, []);
 
-  return { loading, request, error, clearError };
+  return {request, clearError, process, setProcess };
 };
 
